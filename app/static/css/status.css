@@ -37,6 +37,52 @@
     font-weight: bold;
 }
 
+
+.state-downloading {
+    border-color: #5ee37d;
+    color: #5ee37d;
+}
+
+.state-waiting {
+    border-color: #ffd54f;
+    color: #ffd54f;
+}
+
+.state-queued {
+    border-color: #64b5f6;
+    color: #64b5f6;
+}
+
+.state-seeding {
+    border-color: #ba68c8;
+    color: #ba68c8;
+}
+
+.state-paused {
+    border-color: #b0bec5;
+    color: #b0bec5;
+}
+
+.state-checking {
+    border-color: #4dd0e1;
+    color: #4dd0e1;
+}
+
+.state-metadata {
+    border-color: #ffb74d;
+    color: #ffb74d;
+}
+
+.state-error {
+    border-color: #ef5350;
+    color: #ef5350;
+}
+
+.state-unknown {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
 .progress-row {
     display: flex;
     align-items: center;

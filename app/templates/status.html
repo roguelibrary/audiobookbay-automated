@@ -17,7 +17,7 @@
     <div class="torrent-card">
         <div class="torrent-header">
             <h2>{{ torrent.name }}</h2>
-            <span class="state-badge">{{ torrent.state }}</span>
+            <span class="state-badge state-{{ torrent.state_class }}">{{ torrent.state }}</span>
         </div>
 
         <div class="progress-row">

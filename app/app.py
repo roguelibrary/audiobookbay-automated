@@ -388,15 +388,57 @@ def status():
             )
             qb.auth_log_in()
             torrents = qb.torrents_info(category=DL_CATEGORY)
-            torrent_list = [
-                {
-                    "name": torrent.name,
-                    "progress": round(torrent.progress * 100, 2),
-                    "state": torrent.state,
-                    "size": f"{torrent.total_size / (1024 * 1024):.2f} MB",
+            def format_speed(bytes_per_second):
+                if not bytes_per_second:
+                    return "0 KB/s"
+                if bytes_per_second >= 1024 * 1024:
+                    return f"{bytes_per_second / (1024 * 1024):.2f} MB/s"
+                return f"{bytes_per_second / 1024:.2f} KB/s"
+
+            def format_eta(seconds):
+                if seconds is None or seconds < 0 or seconds >= 8640000:
+                    return "N/A"
+                hours, remainder = divmod(seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                if hours:
+                    return f"{hours}h {minutes}m"
+                return f"{minutes}m"
+
+            def format_state(state):
+                state_map = {
+                    "downloading": ("🟢 Downloading", "downloading"),
+                    "stalledDL": ("🟡 Waiting for Peers", "waiting"),
+                    "queuedDL": ("🔵 Queued", "queued"),
+                    "uploading": ("🟣 Seeding", "seeding"),
+                    "stalledUP": ("🟣 Seeding", "seeding"),
+                    "pausedDL": ("⏸ Paused", "paused"),
+                    "pausedUP": ("⏸ Paused", "paused"),
+                    "checkingDL": ("🔍 Checking", "checking"),
+                    "checkingUP": ("🔍 Checking", "checking"),
+                    "error": ("🔴 Error", "error"),
+                    "missingFiles": ("🔴 Missing Files", "error"),
+                    "metaDL": ("🧲 Fetching Metadata", "metadata"),
+                    "forcedDL": ("🟢 Downloading", "downloading"),
+                    "forcedUP": ("🟣 Seeding", "seeding"),
                 }
-                for torrent in torrents
-            ]
+                return state_map.get(state, (state, "unknown"))
+
+            torrent_list = []
+            for torrent in torrents:
+                state_label, state_class = format_state(torrent.state)
+                torrent_list.append(
+                    {
+                        "name": torrent.name,
+                        "progress": round(torrent.progress * 100, 2),
+                        "state": state_label,
+                        "state_class": state_class,
+                        "size": f"{torrent.total_size / (1024 * 1024):.2f} MB",
+                        "speed": format_speed(getattr(torrent, "dlspeed", 0)),
+                        "eta": format_eta(getattr(torrent, "eta", None)),
+                    }
+                )
+
+
         elif DOWNLOAD_CLIENT == "delugeweb":
             delugeweb = delugewebclient(url=DL_URL, password=DL_PASSWORD)
             delugeweb.login()
