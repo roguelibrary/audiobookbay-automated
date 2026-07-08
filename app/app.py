@@ -341,6 +341,37 @@ def status():
                 host=DL_HOST, port=DL_PORT, username=DL_USERNAME, password=DL_PASSWORD,
             )
             torrents = transmission.get_torrents()
+
+            def format_speed(bytes_per_second):
+                if not bytes_per_second:
+                    return "0 KB/s"
+                if bytes_per_second >= 1024 * 1024:
+                    return f"{bytes_per_second / (1024 * 1024):.2f} MB/s"
+                return f"{bytes_per_second / 1024:.2f} KB/s"
+
+
+            def format_eta(seconds):
+                if seconds is None or seconds < 0 or seconds >= 8640000:
+                    return "N/A"
+                hours, remainder = divmod(seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                if hours:
+                    return f"{hours}h {minutes}m"
+                return f"{minutes}m"
+
+
+            torrent_list = [
+                {
+                    "name": torrent.name,
+                    "progress": round(torrent.progress * 100, 2),
+                    "state": torrent.state,
+                    "size": f"{torrent.total_size / (1024 * 1024):.2f} MB",
+                    "speed": format_speed(getattr(torrent, "dlspeed", 0)),
+                    "eta": format_eta(getattr(torrent, "eta", None)),
+                }
+                for torrent in torrents
+           ]
+
             torrent_list = [
                 {
                     "name": torrent.name,

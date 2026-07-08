@@ -10,24 +10,35 @@
 <div class="title-container">
     <h1>Torrent Status</h1>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Progress</th>
-            <th>State</th>
-            <th>Size</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for torrent in torrents %}
-        <tr>
-            <td>{{ torrent.name }}</td>
-            <td>{{ torrent.progress }}%</td>
-            <td>{{ torrent.state }}</td>
-            <td>{{ torrent.size }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+{% if torrents %}
+<div class="status-grid">
+    {% for torrent in torrents %}
+    <div class="torrent-card">
+        <div class="torrent-header">
+            <h2>{{ torrent.name }}</h2>
+            <span class="state-badge">{{ torrent.state }}</span>
+        </div>
+
+        <div class="progress-row">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ torrent.progress }}%;"></div>
+            </div>
+            <span class="progress-text">{{ torrent.progress }}%</span>
+        </div>
+
+        <div class="torrent-meta">
+            <span><strong>Size:</strong> {{ torrent.size }}</span>
+            <span><strong>Speed:</strong> {{ torrent.speed }}</span>
+            <span><strong>ETA:</strong> {{ torrent.eta }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-status">
+    <h2>No active audiobook downloads</h2>
+    <p>Downloads added through ABBA will appear here.</p>
+</div>
+{% endif %}
 {% endblock %}
