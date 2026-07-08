@@ -26,12 +26,17 @@
             </div>
             <span class="progress-text">{{ torrent.progress }}%</span>
         </div>
-
         <div class="torrent-meta">
             <span><strong>Size:</strong> {{ torrent.size }}</span>
-            <span><strong>Speed:</strong> {{ torrent.speed }}</span>
-            <span><strong>ETA:</strong> {{ torrent.eta }}</span>
-        </div>
+
+            {% if torrent.completed %}
+                <span><strong>Completed:</strong> {{ torrent.completed }}</span>
+            {% else %}
+                <span><strong>Speed:</strong> {{ torrent.speed }}</span>
+                <span><strong>ETA:</strong> {{ torrent.eta }}</span>
+            {% endif %}
+       </div>
+
     </div>
     {% endfor %}
 </div>
@@ -41,4 +46,11 @@
     <p>Downloads added through ABBA will appear here.</p>
 </div>
 {% endif %}
+
+<script>
+    setTimeout(function () {
+        window.location.reload();
+    }, 5000);
+</script>
+
 {% endblock %}

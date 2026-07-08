@@ -8,6 +8,7 @@ from transmission_rpc import Client as transmissionrpc
 from deluge_web_client import DelugeWebClient as delugewebclient
 from deluge_web_client import TorrentOptions as delugetorrentoptions
 from dotenv import load_dotenv
+from datetime import datetime
 from urllib.parse import urlparse
 
 app = Flask(__name__)
@@ -403,6 +404,20 @@ def status():
                 if hours:
                     return f"{hours}h {minutes}m"
                 return f"{minutes}m"
+            def format_completed(timestamp):
+                if not timestamp:
+                    return None
+
+                dt = datetime.fromtimestamp(timestamp)
+                now = datetime.now()
+
+                if dt.date() == now.date():
+                    return f"Today at {dt.strftime('%I:%M %p').lstrip('0')}"
+
+                if (now.date() - dt.date()).days == 1:
+                    return f"Yesterday at {dt.strftime('%I:%M %p').lstrip('0')}"
+
+                return dt.strftime("%b %d, %Y %I:%M %p").replace(" 0", " ")
 
             def format_state(state):
                 state_map = {
@@ -413,6 +428,8 @@ def status():
                     "stalledUP": ("🟣 Seeding", "seeding"),
                     "pausedDL": ("⏸ Paused", "paused"),
                     "pausedUP": ("⏸ Paused", "paused"),
+                    "stoppedUP": ("✅ Complete", "complete"),
+                    "stoppedDL": ("⏸ Stopped", "paused"),
                     "checkingDL": ("🔍 Checking", "checking"),
                     "checkingUP": ("🔍 Checking", "checking"),
                     "error": ("🔴 Error", "error"),
@@ -435,6 +452,7 @@ def status():
                         "size": f"{torrent.total_size / (1024 * 1024):.2f} MB",
                         "speed": format_speed(getattr(torrent, "dlspeed", 0)),
                         "eta": format_eta(getattr(torrent, "eta", None)),
+                        "completed": format_completed(getattr(torrent, "completion_on", 0)),
                     }
                 )
 
