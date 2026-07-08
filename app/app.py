@@ -46,6 +46,7 @@ NAV_LINK_URL = os.getenv("NAV_LINK_URL")
 
 # Define the port to be used
 FLASK_PORT = int(os.getenv("PORT", 5078))
+BASE_URL = os.getenv("BASE_URL", "").rstrip("/")
 
 # Print configuration
 print(f"ABB_HOSTNAME: {ABB_HOSTNAME}")
@@ -67,6 +68,7 @@ def inject_nav_link():
     return {
         "nav_link_name": os.getenv("NAV_LINK_NAME"),
         "nav_link_url": os.getenv("NAV_LINK_URL"),
+        "base_url": BASE_URL,
     }
 
 
@@ -298,10 +300,11 @@ def send():
 
         if DOWNLOAD_CLIENT == "qbittorrent":
             qb = Client(
-                host=DL_HOST, port=DL_PORT, username=DL_USERNAME, password=DL_PASSWORD
+                host=DL_HOST, username=DL_USERNAME, password=DL_PASSWORD,
             )
             qb.auth_log_in()
             qb.torrents_add(urls=magnet_link, save_path=save_path, category=DL_CATEGORY)
+
         elif DOWNLOAD_CLIENT == "transmission":
             transmission = transmissionrpc(
                 host=DL_HOST,
@@ -335,7 +338,7 @@ def status():
     try:
         if DOWNLOAD_CLIENT == "transmission":
             transmission = transmissionrpc(
-                host=DL_HOST, port=DL_PORT, username=DL_USERNAME, password=DL_PASSWORD
+                host=DL_HOST, port=DL_PORT, username=DL_USERNAME, password=DL_PASSWORD,
             )
             torrents = transmission.get_torrents()
             torrent_list = [
@@ -350,7 +353,7 @@ def status():
             return render_template("status.html", torrents=torrent_list)
         elif DOWNLOAD_CLIENT == "qbittorrent":
             qb = Client(
-                host=DL_HOST, port=DL_PORT, username=DL_USERNAME, password=DL_PASSWORD
+                host=DL_HOST, username=DL_USERNAME, password=DL_PASSWORD
             )
             qb.auth_log_in()
             torrents = qb.torrents_info(category=DL_CATEGORY)

@@ -292,7 +292,7 @@ function hideScrollingMessages() {
 }
 
 function sendToQB(link, title) {
-  fetch("/send", {
+  fetch(`${window.location.pathname.startsWith('/abba') ? '/abba' : ''}/send`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ link: link, title: title }),
