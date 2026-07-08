@@ -8,17 +8,49 @@
     {% block extra_css %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </head>
+
 <body>
-    <div class="navbar">
-        <a href="{{ base_url }}" class="{% if request.endpoint == 'search' %}active{% endif %}">Search</a>
-        <a href="{{ base_url }}/status" class="{% if request.endpoint == 'status' %}active{% endif %}">Status</a>
-        {% if nav_link_name and nav_link_url %}
-        <a href="{{ nav_link_url }}" target="_blank">{{ nav_link_name }}</a>
-        {% endif %}
-    </div>
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-icon">📚</span>
+            <span class="brand-name">ABBA</span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="{{ base_url }}" class="{% if request.endpoint == 'search' %}active{% endif %}">Search</a>
+            <a href="{{ base_url }}/status" class="{% if request.endpoint == 'status' %}active{% endif %}">Status</a>
+            {% if nav_link_name and nav_link_url %}
+            <a href="{{ nav_link_url }}" target="_blank">{{ nav_link_name }}</a>
+            {% endif %}
+        </nav>
+
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+    </header>
 
     <div class="content">
         {% block content %}{% endblock %}
     </div>
+
+    <script>
+    (function () {
+        const body = document.body;
+        const button = document.getElementById("theme-toggle");
+        const savedTheme = localStorage.getItem("abba-theme") || "light";
+
+        function setTheme(theme) {
+            body.setAttribute("data-theme", theme);
+            localStorage.setItem("abba-theme", theme);
+            button.textContent = theme === "dark" ? "☀️" : "🌙";
+        }
+
+        setTheme(savedTheme);
+
+        button.addEventListener("click", function () {
+            const current = body.getAttribute("data-theme");
+            setTheme(current === "dark" ? "light" : "dark");
+        });
+    })();
+    </script>
 </body>
+
 </html>
