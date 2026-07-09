@@ -17,6 +17,7 @@ let fileSizeSlider;
 function initializeFilters() {
     populateSelectFilters();
     initializeFileSizeSlider();
+    applyDefaultSearchFilters();
 }
 
 // --- Helper Functions ---
@@ -138,6 +139,26 @@ function updateResultsCount() {
   }
 }
 
+function applyDefaultSearchFilters() {
+  const defaults = {
+    "language-filter": localStorage.getItem("abba-default-language") || "",
+    "bitrate-filter": localStorage.getItem("abba-default-bitrate") || "",
+    "format-filter": localStorage.getItem("abba-default-format") || "",
+  };
+
+  Object.entries(defaults).forEach(([id, value]) => {
+    const select = document.getElementById(id);
+    if (!select || !value) return;
+
+    const optionExists = Array.from(select.options).some((option) => option.value === value);
+    if (optionExists) {
+      select.value = value;
+    }
+  });
+
+  applyFilters();
+}
+
 
 function applyFilters() {
   const language = document.getElementById("language-filter").value;
@@ -249,6 +270,25 @@ function hideScrollingMessages() {
   if(messageScroller) messageScroller.style.display = "none";
 }
 
+function showDownloadModal(message) {
+  const modal = document.getElementById("download-modal");
+  const modalMessage = document.getElementById("download-modal-message");
+  const closeButton = document.getElementById("close-download-modal");
+
+  if (!modal || !modalMessage || !closeButton) {
+    alert(message);
+    return;
+  }
+
+  modalMessage.textContent = message;
+  modal.classList.remove("hidden");
+
+  closeButton.onclick = function () {
+    modal.classList.add("hidden");
+  };
+}
+
+
 function sendToQB(link, title) {
   fetch(`${window.location.pathname.startsWith('/abba') ? '/abba' : ''}/send`, {
     method: "POST",
@@ -257,7 +297,7 @@ function sendToQB(link, title) {
   })
     .then((response) => response.json())
     .then((data) => {
-      alert(data.message);
+      showDownloadModal(data.message);
       hideLoadingSpinner();
     });
 }

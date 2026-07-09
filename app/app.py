@@ -10,6 +10,7 @@ from deluge_web_client import TorrentOptions as delugetorrentoptions
 from dotenv import load_dotenv
 from datetime import datetime
 from urllib.parse import urlparse
+from pathlib import Path
 
 app = Flask(__name__)
 
@@ -65,6 +66,15 @@ print(f"NAV_LINK_URL: {NAV_LINK_URL}")
 print(f"PAGE_LIMIT: {PAGE_LIMIT}")
 print(f"PORT: {FLASK_PORT}")
 
+# App Version Information
+VERSION = "Unknown"
+
+try:
+    VERSION = (
+        Path(__file__).resolve().parent / "VERSION"
+    ).read_text().strip()
+except FileNotFoundError:
+    pass
 
 @app.context_processor
 def inject_nav_link():
@@ -74,6 +84,11 @@ def inject_nav_link():
         "base_url": BASE_URL,
     }
 
+@app.context_processor
+def inject_app_info():
+    return {
+        "app_version": VERSION,
+    }
 
 def is_url_valid(url):
     """
@@ -334,6 +349,12 @@ def send():
         )
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html")
+
 
 @app.route("/status/action", methods=["POST"])
 def status_action():

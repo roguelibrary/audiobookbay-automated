@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="title-container">
+    <h1>Settings</h1>
+</div>
+
+<div class="settings-grid">
+    <section class="settings-card">
+        <h2>Appearance</h2>
+        <label>
+            Theme
+            <select id="setting-theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+            </select>
+        </label>
+    </section>
+
+    <section class="settings-card">
+        <h2>Search</h2>
+
+        <label>
+            Default Language
+            <select id="setting-language">
+                <option value="">Any</option>
+                <option value="English">English</option>
+            </select>
+        </label>
+
+        <label>
+            Default Bitrate
+            <select id="setting-bitrate">
+                <option value="">Any</option>
+                <option value="32 kbps">32 kbps</option>
+                <option value="64 kbps">64 kbps</option>
+                <option value="96 kbps">96 kbps</option>
+                <option value="128 kbps">128 kbps</option>
+            </select>
+        </label>
+
+        <label>
+            Default Format
+            <select id="setting-format">
+                <option value="">Any</option>
+                <option value="M4B">M4B</option>
+                <option value="MP3">MP3</option>
+            </select>
+        </label>
+    </section>
+
+    <section class="settings-card">
+        <h2>Downloads</h2>
+        <label>
+            Status Refresh Interval
+            <select id="setting-refresh">
+                <option value="5000">5 seconds</option>
+                <option value="10000">10 seconds</option>
+                <option value="30000">30 seconds</option>
+            </select>
+        </label>
+    </section>
+
+<section class="settings-card">
+    <h2>About</h2>
+
+    <div class="about-grid">
+        <div class="about-row">
+            <span class="about-label">Application</span>
+            <span class="about-value">ABBA Enhanced</span>
+        </div>
+
+        <div class="about-row">
+            <span class="about-label">Version</span>
+            <span class="about-value">v{{ app_version }}</span>
+        </div>
+
+        <div class="about-row">
+            <span class="about-label">Based on</span>
+            <span class="about-value">
+                AudiobookBay Automated by JamesRy96
+            </span>
+        </div>
+
+        <div class="about-row">
+            <span class="about-label">Customized by</span>
+            <span class="about-value">
+                RogueLibrary
+            </span>
+        </div>
+
+        <div class="about-row">
+            <span class="about-label">Repository</span>
+            <span class="about-value">
+                <a href="https://github.com/roguelibrary/audiobookbay-automated"
+                   target="_blank">
+                    GitHub
+                </a>
+            </span>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<div class="settings-actions">
+    <button id="reset-settings" type="button">Reset to Defaults</button>
+    <button id="save-settings" type="button">Save Settings</button>
+</div>
+
+<p id="settings-message"></p>
+
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

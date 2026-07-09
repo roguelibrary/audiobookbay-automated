@@ -109,9 +109,10 @@ document.getElementById("confirm-remove").addEventListener("click", function () 
 
 
 <script>
+let refreshInterval = Number(localStorage.getItem("abba-status-refresh-ms")) || 5000;
 let refreshTimer = setTimeout(function () {
     window.location.reload();
-}, 5000);
+}, refreshInterval);
 
 function pauseAutoRefresh() {
     clearTimeout(refreshTimer);
