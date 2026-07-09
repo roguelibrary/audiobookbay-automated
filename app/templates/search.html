@@ -43,30 +43,27 @@
 
 {% if books %}
 <div id="filter-container">
-    <div class="filter-row">
+    <div class="filter-toolbar">
         <div class="filter-controls">
             <select id="language-filter">
                 <option value="">All Languages</option>
             </select>
+
             <select id="bitrate-filter">
                 <option value="">All Bitrates</option>
             </select>
+
             <select id="format-filter">
                 <option value="">All Formats</option>
             </select>
         </div>
+
+        <button id="clear-button" class="clear-button" type="button">Clear Filters</button>
     </div>
-    <div class="filter-row">
-        <div class="filter-controls">
-            <div class="file-size-filter-wrapper">
-                <label>File Size:</label>
-                <div id="file-size-slider"></div>
-            </div>
-        </div>
-        <div class="filter-buttons">
-             <button id="clear-button">Clear</button>
-        </div>
-    </div>
+
+    <div class="file-size-row">
+        <div id="file-size-slider"></div>
+   </div>
 </div>
 {% endif %}
 
@@ -91,7 +88,7 @@
             </td>
             <td>
                 <button onclick="window.open('{{ book.link }}', '_blank')">Details</button>
-                <button onclick="sendToQB('{{ book.link|escape }}', '{{ book.title|escape }}')">Download to Server</button>
+                <button onclick="sendToQB('{{ book.link|escape }}', '{{ book.title|escape }}')">Download</button>
             </td>
         </tr>
         {% endfor %}

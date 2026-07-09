@@ -169,84 +169,83 @@ img.cover {
 /* Default styles for small screens (vertical layout) */
 .property-results-container {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
     font-size: 0.6em;
 }
 
 .property-results-container span:not(:last-child)::after {
-    /* Hide the separator by default on small screens */
-    content: none;
+    content: "|";
+    margin-left: 10px;
+    color: rgba(255, 255, 255, 0.45);
 }
 
-/* New Filter Styles */
+/* Filter toolbar */
 #filter-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: 0 auto 30px;
-    width: 90%;
-    max-width: 1000px;
-    padding: 0 15px;
+    width: 80%;
+    max-width: 860px;
+    margin: 24px auto 28px;
+    padding: 14px 18px;   /* was 18px */
     box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
 }
 
-.filter-row {
+.filter-toolbar {
     display: flex;
-    justify-content: center; /* Center the content within the row */
+    justify-content: center;
     align-items: center;
-    width: 100%;
-    gap: 15px; /* Add gap between controls and buttons */
+    gap: 16px;
 }
 
 .filter-controls {
     display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 563px;
-    max-width: 70vw;
-}
-
-.filter-buttons {
-    display: flex;
     gap: 10px;
-    flex-shrink: 0; /* Prevent buttons from shrinking */
+    align-items: center;
 }
 
-#filter-container select, #filter-container input {
-    padding: 8px;
-    border-radius: 5px;
+#filter-container select {
+    padding: 5px 10px;
+    border-radius: 8px;
     border: 1px solid #ccc;
     background-color: #fff;
     color: #333;
+    font-size: 0.82rem;
 }
 
-#filter-container button {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: none;
-    background-color: #512da8;
-    color: white;
+.clear-button {
+    width: auto;
+    min-width: 120px;
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    font-size: 0.82rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin-bottom: 0;
 }
 
-#filter-container button:hover {
-    background-color: #673ab7;
+.clear-button:hover {
+    background: var(--accent-color);
+    color: #111;
 }
 
-/* --- File Size Slider Styles --- */
-.file-size-filter-wrapper {
+.file-size-row {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 563px; /* Give the wrapper a specific width */
-    max-width: 70vw; /* Helps with responsiveness on smaller screens */
+    justify-content: center;
+    margin-top: 28px;
 }
+
 
 #file-size-slider {
-    flex-grow: 1; /* Allow the slider to take up the remaining space */
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 /* noUiSlider Customization */
@@ -258,34 +257,14 @@ img.cover {
 }
 
 .noUi-connect {
-    background: #8e24aa;
-}
-
-.noUi-horizontal {
-    height: 10px;
-}
-
-.noUi-horizontal .noUi-handle {
-    width: 20px;
-    height: 20px;
-    right: -11px;
-    top: -6px;
-}
-
-.noUi-horizontal .noUi-tooltip {
-    bottom: -180%;
+    background: #9c27b0;
 }
 
 .noUi-handle {
-    border: 1px solid #d9d9d9;
     border-radius: 50%;
-    background: #fff;
+    background: white;
+    border: 1px solid #ccc;
     box-shadow: none;
-    outline: none;
-}
-
-.noUi-handle:after, .noUi-handle:before {
-    display: none; /* Hide default pseudo-elements */
 }
 
 .noUi-tooltip {
@@ -293,36 +272,28 @@ img.cover {
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 4px 8px;
-    font-size: 0.8em;
+    font-weight: bold;
+    font-size: 0.68rem;
+    padding: 2px 6px;
 }
 
-
-/* Styles for large screens (horizontal layout) */
-@media (min-width: 905px) {
-    .property-results-container {
-        flex-direction: row; /* Arrange items horizontally */
-        justify-content: left; /* Distribute items evenly */
-        align-items: center; /* Vertically align items in the middle */
+@media (max-width: 700px) {
+    .filter-toolbar {
+        grid-template-columns: 1fr;
     }
 
-    .property-results-container span:not(:last-child)::after {
-        /* Add and style the separator on large screens */
-        content: "|";
-        padding: 0 10px; /* Adjust spacing around the separator */
-        color: #ccc; /* A subtle color for the separator */
+    .clear-button {
+        justify-self: start;
+    }
+
+    .file-size-row {
+        grid-template-columns: 1fr;
     }
 }
 
-p.book-title {
-    font-size: 0.9em;
+/* Search result action buttons */
+table td button {
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    font-weight: 600;
 }
-
-@media (max-width: 500px) {
-
-.search-bar {
-    width: 200px;
-}
-
-}
-
