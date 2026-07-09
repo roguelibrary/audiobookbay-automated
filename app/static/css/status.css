@@ -176,3 +176,65 @@
     background: #ef5350;
     color: white;
 }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(25, 25, 25, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    width: auto;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.modal-actions button:hover {
+    background: var(--accent-color);
+    color: #111;
+}
+
+.modal-actions button.danger {
+    border-color: #ef5350;
+    color: #ef5350;
+}
+
+.modal-actions button.danger:hover {
+    background: #ef5350;
+    color: white;
+}

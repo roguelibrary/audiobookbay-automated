@@ -2,22 +2,21 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize filtering if results are present
   if (document.querySelectorAll(".result-row").length > 0) {
     initializeFilters();
-    document
-      .getElementById("filter-button")
-      .addEventListener("click", applyFilters);
+    ["language-filter", "bitrate-filter", "format-filter"].forEach((id) => {
+      document.getElementById(id).addEventListener("change", applyFilters);
+    });
+
     document
       .getElementById("clear-button")
       .addEventListener("click", clearFilters);
   }
 });
 
-let datePicker;
 let fileSizeSlider;
 
 function initializeFilters() {
     populateSelectFilters();
     initializeFileSizeSlider();
-    initializeDateRangePicker();
 }
 
 // --- Helper Functions ---
@@ -46,34 +45,6 @@ function formatFileSize(mb) {
 
 
 // --- Filtering Functions ---
-
-function initializeDateRangePicker() {
-    const allDates = Array.from(document.querySelectorAll('.result-row'))
-        .map(row => {
-            const dateStr = row.dataset.postDate;
-            if (!dateStr || dateStr === 'N/A') return null;
-            // Standardize the date format for reliable parsing
-            const formattedStr = dateStr.replace(/(\d{1,2})\s(\w{3})\s(\d{4})/, '$2 $1, $3');
-            const date = new Date(formattedStr);
-            return isNaN(date) ? null : date;
-        })
-        .filter(date => date !== null);
-
-    let options = {
-        mode: "range",
-        dateFormat: "Y-m-d"
-    };
-
-    if (allDates.length > 0) {
-        const minDate = new Date(Math.min.apply(null, allDates));
-        const maxDate = new Date(Math.max.apply(null, allDates));
-        options.minDate = minDate;
-        options.maxDate = maxDate;
-    }
-
-    datePicker = flatpickr("#date-range-filter", options);
-}
-
 
 function initializeFileSizeSlider() {
     const sliderElement = document.getElementById('file-size-slider');
@@ -110,6 +81,8 @@ function initializeFileSizeSlider() {
             'max': maxSize
         }
     });
+
+    fileSizeSlider.on("set", applyFilters);
 }
 
 function populateSelectFilters() {
@@ -158,7 +131,6 @@ function applyFilters() {
   const language = document.getElementById("language-filter").value;
   const bitrate = document.getElementById("bitrate-filter").value;
   const format = document.getElementById("format-filter").value;
-  const selectedDates = datePicker.selectedDates;
   const sizeRange = fileSizeSlider ? fileSizeSlider.get().map(parseFloat) : null;
 
 
@@ -179,31 +151,6 @@ function applyFilters() {
         }
     }
 
-    // Date range filtering
-    if (selectedDates.length === 2) {
-        const rowDateStr = row.dataset.postDate;
-        if (!rowDateStr || rowDateStr === 'N/A') {
-            visible = false; // Hide items with no date if a date filter is active
-        } else {
-            try {
-                const startDate = selectedDates[0];
-                const endDate = selectedDates[1];
-                // Standardize the date format from the HTML before parsing
-                const formattedStr = rowDateStr.replace(/(\d{1,2})\s(\w{3})\s(\d{4})/, '$2 $1, $3');
-                const rowDate = new Date(formattedStr);
-
-                // Set time to 0 to compare dates only
-                rowDate.setHours(0, 0, 0, 0);
-
-                if (rowDate < startDate || rowDate > endDate) {
-                    visible = false;
-                }
-            } catch (e) {
-                console.error("Invalid date format", e);
-                visible = false;
-            }
-        }
-    }
 
     row.style.display = visible ? "" : "none";
   });
@@ -213,12 +160,9 @@ function clearFilters() {
   document.getElementById("language-filter").value = "";
   document.getElementById("bitrate-filter").value = "";
   document.getElementById("format-filter").value = "";
-  if (datePicker) datePicker.clear();
   if (fileSizeSlider) fileSizeSlider.reset();
-  
-  document.querySelectorAll(".result-row").forEach((row) => {
-    row.style.display = "";
-  });
+
+  applyFilters();
 }
 
 // --- Search Interaction Functions ---

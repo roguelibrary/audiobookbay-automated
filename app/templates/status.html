@@ -54,7 +54,7 @@
                <button type="submit">Resume</button>
            </form>
 
-           <form method="POST" action="{{ base_url }}/status/action" onsubmit="return confirm('Remove this torrent from qBittorrent? Files will not be deleted.');">
+           <form method="POST" action="{{ base_url }}/status/action" class="remove-form">
                <input type="hidden" name="hash" value="{{ torrent.hash }}">
                <input type="hidden" name="action" value="remove">
                <button type="submit" class="danger">Remove</button>
@@ -71,10 +71,52 @@
 </div>
 {% endif %}
 
+<div id="remove-modal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Remove torrent?</h2>
+        <p>This will remove the torrent from qBittorrent. Downloaded files will not be deleted.</p>
+
+        <div class="modal-actions">
+            <button id="cancel-remove" type="button">Cancel</button>
+            <button id="confirm-remove" type="button" class="danger">Remove</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    setTimeout(function () {
-        window.location.reload();
-    }, 5000);
+let pendingRemoveForm = null;
+
+document.querySelectorAll(".remove-form").forEach(function (form) {
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        pauseAutoRefresh();
+        pendingRemoveForm = form;
+        document.getElementById("remove-modal").classList.remove("hidden");
+    });
+});
+
+document.getElementById("cancel-remove").addEventListener("click", function () {
+    pendingRemoveForm = null;
+    document.getElementById("remove-modal").classList.add("hidden");
+});
+
+document.getElementById("confirm-remove").addEventListener("click", function () {
+    if (pendingRemoveForm) {
+        pendingRemoveForm.submit();
+    }
+});
+</script>
+
+
+<script>
+let refreshTimer = setTimeout(function () {
+    window.location.reload();
+}, 5000);
+
+function pauseAutoRefresh() {
+    clearTimeout(refreshTimer);
+}
 </script>
 
 {% endblock %}
+

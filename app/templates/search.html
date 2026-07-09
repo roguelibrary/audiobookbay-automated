@@ -3,13 +3,11 @@
 {% block title %}Search{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/flatpickr.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/nouislider.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='vendor/js/flatpickr.min.js') }}"></script>
 <script src="{{ url_for('static', filename='vendor/js/nouislider.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/search.js') }}" defer></script>
 {% endblock %}
@@ -56,10 +54,6 @@
             <select id="format-filter">
                 <option value="">All Formats</option>
             </select>
-            <input type="text" id="date-range-filter" placeholder="Select Date Range">
-        </div>
-        <div class="filter-buttons">
-            <button id="filter-button">Filter</button>
         </div>
     </div>
     <div class="filter-row">
