@@ -67,6 +67,14 @@
 </div>
 {% endif %}
 
+
+{% if books %}
+<div class="results-summary">
+    Showing <span id="visible-results-count">{{ books|length }}</span> of {{ books|length }} results
+</div>
+{% endif %}
+
+
 <table>
     <tbody id="results-table-body">
         {% for book in books %}

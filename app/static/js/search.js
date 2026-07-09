@@ -127,6 +127,18 @@ function populateSelectFilters() {
   });
 }
 
+
+function updateResultsCount() {
+  const rows = document.querySelectorAll(".result-row");
+  const visibleRows = Array.from(rows).filter((row) => row.style.display !== "none");
+  const countElement = document.getElementById("visible-results-count");
+
+  if (countElement) {
+    countElement.textContent = visibleRows.length;
+  }
+}
+
+
 function applyFilters() {
   const language = document.getElementById("language-filter").value;
   const bitrate = document.getElementById("bitrate-filter").value;
@@ -154,6 +166,8 @@ function applyFilters() {
 
     row.style.display = visible ? "" : "none";
   });
+
+  updateResultsCount();
 }
 
 function clearFilters() {

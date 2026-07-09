@@ -297,3 +297,12 @@ table td button {
     padding: 8px 14px;
     font-weight: 600;
 }
+
+.results-summary {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto 12px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-weight: 600;
+}
