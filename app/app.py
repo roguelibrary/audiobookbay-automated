@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, redirect
 from bs4 import BeautifulSoup
 from qbittorrentapi import Client
 from transmission_rpc import Client as transmissionrpc
@@ -35,6 +35,8 @@ else:
     # Make a DL_URL for Deluge if one was not specified
     if DL_HOST and DL_PORT:
         DL_URL = f"{DL_SCHEME}://{DL_HOST}:{DL_PORT}"
+
+QBIT_WEB_URL = os.getenv("QBIT_WEB_URL", DL_HOST)
 
 DL_USERNAME = os.getenv("DL_USERNAME")
 DL_PASSWORD = os.getenv("DL_PASSWORD")
@@ -333,6 +335,33 @@ def send():
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
+@app.route("/status/action", methods=["POST"])
+def status_action():
+    if DOWNLOAD_CLIENT != "qbittorrent":
+        return jsonify({"message": "Actions are only supported for qBittorrent"}), 400
+
+    torrent_hash = request.form.get("hash")
+    action = request.form.get("action")
+
+    if not torrent_hash or not action:
+        return jsonify({"message": "Missing torrent hash or action"}), 400
+
+    try:
+        qb = Client(host=DL_HOST, username=DL_USERNAME, password=DL_PASSWORD)
+        qb.auth_log_in()
+
+        if action == "pause":
+            qb.torrents_pause(torrent_hashes=torrent_hash)
+        elif action == "resume":
+            qb.torrents_resume(torrent_hashes=torrent_hash)
+        elif action == "remove":
+            qb.torrents_delete(delete_files=False, torrent_hashes=torrent_hash)
+        else:
+            return jsonify({"message": "Unsupported action"}), 400
+
+        return redirect(f"{BASE_URL}/status")
+    except Exception as e:
+        return jsonify({"message": f"Failed to {action} torrent: {e}"}), 500
 
 @app.route("/status")
 def status():
@@ -373,15 +402,6 @@ def status():
                 for torrent in torrents
            ]
 
-            torrent_list = [
-                {
-                    "name": torrent.name,
-                    "progress": round(torrent.progress, 2),
-                    "state": torrent.status,
-                    "size": f"{torrent.total_size / (1024 * 1024):.2f} MB",
-                }
-                for torrent in torrents
-            ]
             return render_template("status.html", torrents=torrent_list)
         elif DOWNLOAD_CLIENT == "qbittorrent":
             qb = Client(
@@ -446,6 +466,8 @@ def status():
                 torrent_list.append(
                     {
                         "name": torrent.name,
+                        "hash": torrent.hash,
+                        "qbit_url": QBIT_WEB_URL,
                         "progress": round(torrent.progress * 100, 2),
                         "state": state_label,
                         "state_class": state_class,

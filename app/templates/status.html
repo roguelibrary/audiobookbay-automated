@@ -36,6 +36,30 @@
                 <span><strong>ETA:</strong> {{ torrent.eta }}</span>
             {% endif %}
        </div>
+       <div class="torrent-actions">
+           <a class="action-link"
+              href="{{ torrent.qbit_url }}"
+              target="_blank">
+               Open in qBittorrent
+           </a>
+           <form method="POST" action="{{ base_url }}/status/action">
+               <input type="hidden" name="hash" value="{{ torrent.hash }}">
+               <input type="hidden" name="action" value="pause">
+               <button type="submit">Pause</button>
+           </form>
+
+           <form method="POST" action="{{ base_url }}/status/action">
+               <input type="hidden" name="hash" value="{{ torrent.hash }}">
+               <input type="hidden" name="action" value="resume">
+               <button type="submit">Resume</button>
+           </form>
+
+           <form method="POST" action="{{ base_url }}/status/action" onsubmit="return confirm('Remove this torrent from qBittorrent? Files will not be deleted.');">
+               <input type="hidden" name="hash" value="{{ torrent.hash }}">
+               <input type="hidden" name="action" value="remove">
+               <button type="submit" class="danger">Remove</button>
+           </form>
+        </div>
 
     </div>
     {% endfor %}
